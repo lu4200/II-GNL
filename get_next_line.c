@@ -6,25 +6,25 @@
 /*   By: lumaret <lumaret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 16:50:31 by lumaret           #+#    #+#             */
-/*   Updated: 2024/01/07 14:48:25 by lumaret          ###   ########.fr       */
+/*   Updated: 2024/01/07 16:09:06 by lumaret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+//principal fonction w/ 3 big steps
 char	*get_next_line(int fd)
 {
 	static t_list *stash = NULL;
 	char	*line;
-	int	read;
+	int	readed;
 
-	// problemes de lecture
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0))
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
 		return (NULL);
-	read = 1;
+	readed = 1;
 	line = NULL;
 	// read from fd and add to stash
-	read_n_stash(&stash, &read);
+	read_n_stash(fd, &stash, &readed);
 	if (!stash)
 		return (NULL);
 	// extract from stash to line
@@ -34,13 +34,14 @@ char	*get_next_line(int fd)
 	if (line[0] == '\0')
 	{
 		free_stash(stash);
-		stash == NULL;
+		stash = NULL;
 		free(line);
 		return (NULL);
 	}
 	return (line);
 }
 
+//take in buffer the char read, put in the stash + free buff
 void	read_n_stash(int fd, t_list **stash, int *read_ptr)
 {
 	char	*buff;
@@ -51,7 +52,7 @@ void	read_n_stash(int fd, t_list **stash, int *read_ptr)
 		if (!buff)
 			return ;
 		*read_ptr = (int)read(fd, buff, BUFFER_SIZE);
-		if ((!*stash && read_ptr == 0) || read_ptr == -1)
+		if ((!*stash && read_ptr == 0) || *read_ptr == -1)
 			return (free(buff));
 		buff[*read_ptr] = '\0';
 		add_2_stash(stash, buff, *read_ptr);
@@ -59,7 +60,7 @@ void	read_n_stash(int fd, t_list **stash, int *read_ptr)
 	}
 }
 
-// replay from 24:40
+// new node of t_list in stash
 void	add_2_stash(t_list **stash, char *buff, int read)
 {
 	int	i;
@@ -89,6 +90,7 @@ void	add_2_stash(t_list **stash, char *buff, int read)
 	last->next = new_node;
 }
 
+// copy content of stash to line until meeting '\n'
 void	extract_line(t_list *stash, char **line)
 {
 	int	i;
@@ -117,6 +119,7 @@ void	extract_line(t_list *stash, char **line)
 	(*line)[j] = '\0';
 }
 
+//
 void	clean_stash(t_list **stash)
 {
 	t_list	*last;
@@ -127,7 +130,7 @@ void	clean_stash(t_list **stash)
 	clean_node = malloc(sizeof(t_list));
 	if (!stash || !clean_node)
 		return ;
-	clean_node->next == NULL;
+	clean_node->next = NULL;
 	last = ft_lst_get_last(*stash);
 	i = 0;
 	while (last->content[i] && last->content[i] != '\n')

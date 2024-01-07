@@ -6,7 +6,7 @@
 /*   By: lumaret <lumaret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 16:49:08 by lumaret           #+#    #+#             */
-/*   Updated: 2024/01/07 14:48:23 by lumaret          ###   ########.fr       */
+/*   Updated: 2024/01/07 15:24:10 by lumaret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,5 +30,15 @@ typedef struct s_list
 }	t_list;
 
 char	*get_next_line(int fd);
+void	read_n_stash(int fd, t_list **stash, int *read_ptr);
+void	add_2_stash(t_list **stash, char *buff, int read);
+void	extract_line(t_list *stash, char **line);
+void	clean_stash(t_list **stash);
+int	ft_newline(t_list *stash);
+t_list	*ft_lst_get_last(t_list *stash);
+void	generate_line(char **line, t_list *stash);
+void	free_stash(t_list *stash);
+int	ft_strlen(char *str);
+
 
 #endif

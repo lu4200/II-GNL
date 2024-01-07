@@ -6,12 +6,14 @@
 /*   By: lumaret <lumaret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 17:15:59 by lumaret           #+#    #+#             */
-/*   Updated: 2024/01/07 14:48:29 by lumaret          ###   ########.fr       */
+/*   Updated: 2024/01/07 16:12:09 by lumaret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+
+// found a \n in linked chain, work as a boolean
 int	ft_newline(t_list *stash)
 {
 	int	i;
@@ -30,6 +32,7 @@ int	ft_newline(t_list *stash)
 	return (0);
 }
 
+// get the last node of a linked chain
 t_list	*ft_lst_get_last(t_list *stash)
 
 {
@@ -38,9 +41,10 @@ t_list	*ft_lst_get_last(t_list *stash)
 	current = stash;
 	while (current && current->next)
 		current = current->next;
-	return (current->content);
+	return (current);
 }
 
+// ln of content + malloc line to hold return values
 void	generate_line(char **line, t_list *stash)
 {
 	int	i;
@@ -65,6 +69,7 @@ void	generate_line(char **line, t_list *stash)
 	*line = malloc(sizeof(char) * (len + 1));
 }
 
+// all is in the name..
 void	free_stash(t_list *stash)
 {
 	t_list	*current;
@@ -78,4 +83,14 @@ void	free_stash(t_list *stash)
 		free(current);
 		current = next;
 	}
+}
+
+// ;)
+int	ft_strlen(char *str)
+{
+	int	i;
+
+	while (str[i])
+		i++;
+	return (i);
 }
