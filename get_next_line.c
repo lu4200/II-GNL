@@ -6,7 +6,7 @@
 /*   By: lumaret <lumaret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 16:50:31 by lumaret           #+#    #+#             */
-/*   Updated: 2024/01/06 18:29:31 by lumaret          ###   ########.fr       */
+/*   Updated: 2024/01/07 14:48:25 by lumaret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,13 @@ char	*get_next_line(int fd)
 	extract_line(stash, &line);
 	// clean up stash and return line
 	clean_stash(&stash);
+	if (line[0] == '\0')
+	{
+		free_stash(stash);
+		stash == NULL;
+		free(line);
+		return (NULL);
+	}
 	return (line);
 }
 
@@ -64,7 +71,7 @@ void	add_2_stash(t_list **stash, char *buff, int read)
 		return ;
 	new_node->next = NULL;
 	new_node->content = malloc(sizeof(char) * (read + 1));
-	if (!new_node)
+	if (!new_node->content)
 		return ;
 	i = 0;
 	while (buff[i] && i < read)
@@ -92,8 +99,10 @@ void	extract_line(t_list *stash, char **line)
 	generate_line(line, stash);
 	if (!*line)
 		return ;
+	j = 0;
 	while (stash)
 	{
+		i = 0;
 		while (stash->content[i])
 		{
 			if (stash->content[i] == '\n')
@@ -104,7 +113,34 @@ void	extract_line(t_list *stash, char **line)
 			(*line)[j++] = stash->content[i++];
 		}
 		stash = stash->next;
-
 	}
 	(*line)[j] = '\0';
+}
+
+void	clean_stash(t_list **stash)
+{
+	t_list	*last;
+	t_list	*clean_node;
+	int	i;
+	int	j;
+
+	clean_node = malloc(sizeof(t_list));
+	if (!stash || !clean_node)
+		return ;
+	clean_node->next == NULL;
+	last = ft_lst_get_last(*stash);
+	i = 0;
+	while (last->content[i] && last->content[i] != '\n')
+		i++;
+	if (last->content[i] && last->content[i] == '\n')
+		i++;
+	clean_node->content = malloc(sizeof(char) * (ft_strlen(last->content) - i) + 1);
+	if (clean_node->content == NULL)
+		return ;
+	j = 0;
+	while (last->content[i])
+		clean_node->content[j++] = last->content[i++];
+	clean_node->content[j] = '\0';
+	free_stash(*stash);
+	*stash = clean_node;
 }

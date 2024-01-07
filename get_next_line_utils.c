@@ -6,7 +6,7 @@
 /*   By: lumaret <lumaret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 17:15:59 by lumaret           #+#    #+#             */
-/*   Updated: 2024/01/06 18:29:42 by lumaret          ###   ########.fr       */
+/*   Updated: 2024/01/07 14:48:29 by lumaret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,19 @@ void	generate_line(char **line, t_list *stash)
 		stash = stash->next;
 	}
 	*line = malloc(sizeof(char) * (len + 1));
+}
+
+void	free_stash(t_list *stash)
+{
+	t_list	*current;
+	t_list	*next;
+
+	current = stash;
+	while (current)
+	{
+		free(current->content);
+		next = current->next;
+		free(current);
+		current = next;
+	}
 }
