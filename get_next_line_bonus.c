@@ -1,20 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lumaret <lumaret@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/06 16:50:31 by lumaret           #+#    #+#             */
-/*   Updated: 2024/01/12 15:52:47 by lumaret          ###   ########.fr       */
+/*   Updated: 2024/01/12 15:58:09 by lumaret          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*get_next_line(int fd)
 {
-	static t_list	*stash = NULL;
+	static t_list	*stashes[32768];
 	char			*line;
 	int				readed;
 
@@ -22,15 +22,15 @@ char	*get_next_line(int fd)
 		return (NULL);
 	readed = 1;
 	line = NULL;
-	read_n_stash(fd, &stash, &readed);
-	if (!stash)
+	read_n_stash(fd, &stashes[fd], &readed);
+	if (!stashes[fd])
 		return (NULL);
-	extract_line(stash, &line);
-	clean_stash(&stash);
+	extract_line(stashes[fd], &line);
+	clean_stash(&stashes[fd]);
 	if (line[0] == '\0')
 	{
-		free_stash(stash);
-		stash = NULL;
+		free_stash(stashes[fd]);
+		stashes[fd] = NULL;
 		free(line);
 		return (NULL);
 	}
